@@ -13,7 +13,7 @@ class WhackAMole:
         # 游戏窗口设置
         self.width, self.height = 800, 600
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("打地鼠游戏")
+        pygame.display.set_caption("打YJY游戏")
         
         # 定义8个洞口位置（根据100x100图片尺寸优化坐标）
         # self.hole_positions = [
@@ -34,7 +34,7 @@ class WhackAMole:
         
         # 游戏状态变量
         self.filled_holes = set()  # 已被填满的洞口索引
-        self.current_moles = []    # 当前显示的地鼠
+        self.current_moles = []    # 当前显示的YJY
         self.game_over = False     # 游戏是否结束
         self.game_win = False      # 游戏是否胜利
         self.game_over_time = 0    # 游戏结束时间
@@ -71,7 +71,7 @@ class WhackAMole:
             images['background'] = pygame.image.load('image1.png').convert()
             images['background'] = pygame.transform.scale(images['background'], (self.width, self.height))
             
-            # 加载地鼠图片（白底转透明，缩放至100x100）
+            # 加载YJY图片（白底转透明，缩放至100x100）
             target_size = (100, 100)  # 统一设置目标尺寸为100x100
             images['moles'] = [
                 pygame.transform.scale(self.make_white_transparent(pygame.image.load('image2.png')), target_size),
@@ -92,7 +92,7 @@ class WhackAMole:
                 target_size
             )
             
-            # 加载已填充洞口的图片（白底转透明，缩放至100x100）
+            # 加载已填充座位的图片（白底转透明，缩放至100x100）
             images['filled_hole'] = pygame.transform.scale(
                 self.make_white_transparent(pygame.image.load('image8.png')), 
                 target_size
@@ -130,17 +130,17 @@ class WhackAMole:
     
     def create_mole(self):
         """随机在未被填充的洞口创建一个地鼠"""
-        # 找出所有未被填充的洞口
+        # 找出所有未被填充的座位
         available_holes = [i for i in range(8) if i not in self.filled_holes]
         
         if not available_holes:
-            return  # 所有洞口都被填充，游戏胜利
+            return  # 所有座位都被填充，游戏胜利
         
-        # 随机选择一个洞口和地鼠类型
+        # 随机选择一个座位和YJY类型
         hole_idx = random.choice(available_holes)
-        mole_type = random.randint(0, 3)  # 4种地鼠图片
+        mole_type = random.randint(0, 3)  # 4种YJY图片
         
-        # 记录地鼠出现的时间和位置
+        # 记录YJY出现的时间和位置
         return {
             'hole_idx': hole_idx,
             'type': mole_type,
@@ -152,7 +152,7 @@ class WhackAMole:
     def check_mole_hit(self, mole, mouse_pos):
         """检查鼠标点击是否击中地鼠（适配100x100图片尺寸）"""
         x, y = self.hole_positions[mole['hole_idx']]
-        # 获取地鼠图片的实际大小
+        # 获取YJY图片的实际大小
         mole_img = self.images['moles'][mole['type']]
         mole_width, mole_height = mole_img.get_size()
         # 根据100x100图片尺寸创建碰撞检测区域
@@ -173,17 +173,17 @@ class WhackAMole:
                 sys.exit()
             return
         
-        # 检查是否需要生成新地鼠（调整概率适配更大图片）
+        # 检查是否需要生成新YJY（调整概率适配更大图片）
         if not self.current_moles and random.random() < 0.12:  # 略微提高生成概率
             new_mole = self.create_mole()
             if new_mole:  # 确保成功创建了地鼠
                 self.current_moles.append(new_mole)
         
-        # 检查地鼠是否超时未被击中（适配更大图片延长显示时间）
+        # 检查YJY是否超时未被击中（适配更大图片延长显示时间）
         current_time = time.time()
         for mole in self.current_moles[:]:
             if not mole['hit'] and current_time - mole['appear_time'] > 2.5:  # 延长至2.5秒
-                # 地鼠超时未被击中，游戏结束（失败）
+                # YJY超时未被击中，游戏结束（失败）
                 self.game_over = True
                 self.game_win = False
                 self.game_over_time = current_time
@@ -210,7 +210,7 @@ class WhackAMole:
             # 居中绘制100x100的填充洞口图片
             self.screen.blit(hole_img, (x - hole_width // 2, y - hole_height // 2))
         
-        # 绘制地鼠和击中特效
+        # 绘制YJY和击中特效
         for mole in self.current_moles:
             x, y = self.hole_positions[mole['hole_idx']]
             if mole['hit']:
@@ -219,7 +219,7 @@ class WhackAMole:
                 effect_width, effect_height = effect_img.get_size()
                 self.screen.blit(effect_img, (x - effect_width // 2, y - effect_height // 2))
             else:
-                # 绘制地鼠
+                # 绘制YJY
                 mole_img = self.images['moles'][mole['type']]
                 mole_width, mole_height = mole_img.get_size()
                 self.screen.blit(mole_img, (x - mole_width // 2, y - mole_height // 2))
@@ -241,7 +241,7 @@ class WhackAMole:
             
             self.screen.blit(progress_img, (x, y))
         
-        # 绘制锤子（跟随鼠标，适配100x100尺寸）
+        # 绘制锤子（跟随YJY，适配100x100尺寸）
         mouse_pos = pygame.mouse.get_pos()
         hammer_img = self.images['hammer']
         hammer_width, hammer_height = hammer_img.get_size()
@@ -286,12 +286,12 @@ class WhackAMole:
         """处理鼠标点击事件（适配100x100图片的碰撞检测）"""
         for mole in self.current_moles:
             if not mole['hit'] and self.check_mole_hit(mole, mouse_pos):
-                # 击中地鼠
+                # 击中YJY
                 mole['hit'] = True
                 mole['hit_time'] = time.time()
                 self.filled_holes.add(mole['hole_idx'])
                 
-                # 检查是否所有洞口都被填充
+                # 检查是否所有座位都被填充
                 if len(self.filled_holes) == 8:
                     self.game_over = True
                     self.game_win = True  # 标记为胜利
@@ -308,4 +308,5 @@ class WhackAMole:
 
 if __name__ == "__main__":
     game = WhackAMole()
+
     game.run()
